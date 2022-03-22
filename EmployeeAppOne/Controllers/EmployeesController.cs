@@ -12,11 +12,11 @@ namespace EmployeeAppOne.Controllers
 {
     [Route("[controller]")]
     [ApiController]
-    public class EmployeeController : ControllerBase
+    public class EmployeesController : ControllerBase
     {
         private readonly EmployeeAppContext _context;
 
-        public EmployeeController(EmployeeAppContext context)
+        public EmployeesController(EmployeeAppContext context)
         {
             _context = context;
         }
@@ -47,10 +47,12 @@ namespace EmployeeAppOne.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmployee(int id, Employee employee)
         {
-            if (id != employee.EmployeeID)
+            if (id != employee.Id)
             {
                 return BadRequest();
             }
+
+            employee.ModifiedDate = DateTime.Now;
 
             _context.Entry(employee).State = EntityState.Modified;
 
@@ -78,10 +80,11 @@ namespace EmployeeAppOne.Controllers
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
+            employee.ModifiedDate= DateTime.Now;
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployee", new { id = employee.EmployeeID }, employee);
+            return CreatedAtAction("GetEmployee", new { id = employee.Id}, employee);
         }
 
         // DELETE: Employee/5
@@ -102,7 +105,7 @@ namespace EmployeeAppOne.Controllers
 
         private bool EmployeeExists(int id)
         {
-            return _context.Employees.Any(e => e.EmployeeID == id);
+            return _context.Employees.Any(e => e.Id== id);
         }
     }
 }

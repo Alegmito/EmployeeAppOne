@@ -240,7 +240,7 @@ namespace EmployeeAppOne.Data
                         Email = emails[i],
                         BirthDate = GetRandBirthDate(),
                         Salary = rand.Next(40, 350) * 1000,
-                        LastModifiedDate = DateTime.Now
+                        ModifiedDate = DateTime.Now
                     };
             }
         }
