@@ -7,7 +7,8 @@ export const employeeService = {
     _delete,
     update,
     getById,
-    create
+    create,
+    getPage
 }
 
 function create(params) {
@@ -28,4 +29,8 @@ function update(id, params){
 
 function getById(id){
     return fetchWrapper.get(`${baseUrl}/${id}`);
+}
+
+function getPage(_page, _sortState, _direction){
+    return fetchWrapper.get(`${baseUrl}/pages?page=${_page}&sortState=${_sortState}&ascending=${_direction}`);
 }

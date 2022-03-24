@@ -1,4 +1,4 @@
-﻿{
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
@@ -10,12 +10,11 @@
   "profiles": {
     "EmployeeAppOne": {
       "commandName": "Project",
-      "launchBrowser": true,
-      "applicationUrl": "https://localhost:7127;http://localhost:5127",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
-      }
+      },
+      "applicationUrl": "https://localhost:7127;http://localhost:5127"
     },
     "IIS Express": {
       "commandName": "IISExpress",

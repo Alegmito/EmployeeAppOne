@@ -25,14 +25,16 @@ function AddEdit({history, match}){
         return employeeService.create(data)
             .then(() => {
                 console.log("User created");
+                history.push('.');
             })
-            .catch(console.log("Error"));
+            .catch((ex) => console.log(ex));
     }
 
     function updateEmployee(id, data){
         return employeeService.update(id, data)
             .then(() => {
                 console.log('User updated');
+                history.push('.');
             })
             .catch((ex) => console.log(ex));
     }

@@ -71,6 +71,17 @@ namespace EmployeeAppOne.Controllers
                     throw;
                 }
             }
+            catch (DbUpdateException)
+            {
+                if (EmailExists(employee.Email))
+                {
+                    return BadRequest();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             return NoContent();
         }
@@ -82,9 +93,38 @@ namespace EmployeeAppOne.Controllers
         {
             employee.ModifiedDate= DateTime.Now;
             _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetEmployee", new { id = employee.Id}, employee);
+            try
+            {
+                await _context.SaveChangesAsync();
+                
+            }
+            catch (DbUpdateException ex)
+            {
+                if (EmailExists(employee.Email))
+                {
+                    return BadRequest(new {message = ex.InnerException.Message});
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return CreatedAtAction("GetEmployee", new { id = employee.Id }, employee);
+
+        }
+
+        [HttpGet("pages")]
+        public async Task<ActionResult<PageViewResult<Employee>>> GetPage(int page = 1, SortState sortState = SortState.None, bool ascending = true)
+        {
+            int pageSize = 10;
+
+            var sortModel = new EmployeeSortModel(sortState, ascending);
+
+            var employees = QueryExtenstions.GetSortedEmployees(_context.Employees, sortModel);
+
+            return await QueryExtenstions.GetPageViewResultAsync(employees, page, pageSize);
         }
 
         // DELETE: Employee/5
@@ -106,6 +146,11 @@ namespace EmployeeAppOne.Controllers
         private bool EmployeeExists(int id)
         {
             return _context.Employees.Any(e => e.Id== id);
+        }
+
+        private bool EmailExists(string email)
+        {
+            return _context.Employees.Any(e => e.Email == email);
         }
     }
 }
