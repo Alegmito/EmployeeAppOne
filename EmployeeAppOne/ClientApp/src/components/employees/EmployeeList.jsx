@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import {employeeService} from '../../_services/employeeService'
+import { alertService } from '../../_services/alertService';
 
 export function EmployeeList({match}) {
     const pageSpan = 4;
@@ -32,7 +33,10 @@ export function EmployeeList({match}) {
             })}
         );
         employeeService._delete(id)
-            .then(() => setRefresh(true))
+            .then(() => {
+                setRefresh(true);
+                alertService.success("Employee deleted", {keepAfterRouteChange: true})
+            })
     }
 
     function getPage(pageNum)
@@ -40,7 +44,7 @@ export function EmployeeList({match}) {
         employeeService.getPage(pageNum, sortState.column, sortState.direction).then(x => setPage(x));
     }
 
-    function makePages(currPage, span, lastPage)
+    function makePagesArray(currPage, span, lastPage)
     {
         const low = currPage - span;
         const high = currPage + span;
@@ -82,7 +86,7 @@ export function EmployeeList({match}) {
 
     return(
         <div>
-            <h1>Users</h1>
+            <h1>Employees</h1>
             <Link to={`${path}/add`} className="btn btn-sm btn-success mb-2">Add Employee</Link>
             <table className="table table-striped">
                 <thead>
@@ -109,12 +113,13 @@ export function EmployeeList({match}) {
                             {/* <td>{employee.modifiedDate}</td> */}
                             <td style={{whiteSpace: 'nowrap'}}>
                                 <Link to={`${path}/${employee.id}`} className="btn btn-sm btn-primary mr-1">Edit</Link>
+                                 
                                 <button onClick={() => deleteEmployee(employee.id)} 
-                                className="btn btn-danger btn-delete-user"
+                                className="btn btn-danger btn-sm btn-delete-user"
                                 disabled={employee.isDeleting}>
                                     {employee.isDeleting ?
                                         <span className='spinner-border spinner-border-sm'></span>
-                                        : <span>Delete</span>    
+                                        : "Delete"   
                                     }
                                 </button>
                             </td>
@@ -128,14 +133,14 @@ export function EmployeeList({match}) {
                 <li className={page.currentPage === 1 ? "page-item disabled" : "page-item"} onClick={() => getPage(1)}>
                 <a className="page-link" >1</a>
                 </li>
-                {page.currentPage - pageSpan > 1 && <li className="page-item disabled"><a className="page-link">...</a></li>}
+                {page.currentPage - pageSpan > 2 && <li className="page-item disabled"><a className="page-link">...</a></li>}
                 
-                {makePages(page.currentPage, pageSpan, page.pageCount).map(x => 
+                {makePagesArray(page.currentPage, pageSpan, page.pageCount).map(x => 
                         <li className={page.currentPage === x ? "page-item disabled" : "page-item"} onClick={() => getPage(x)}>
                             <a className="page-link">{x}</a>
                         </li>)
                 }
-                {page.currentPage + pageSpan < page.pageCount && <li className="page-item disabled"><a className="page-link">...</a></li>}
+                {page.currentPage + pageSpan < page.pageCount - 1 && <li className="page-item disabled"><a className="page-link">...</a></li>}
                 {page.pageCount > 1 && <li className={page.currentPage === page.pageCount ? "page-item disabled" : "page-item"}  onClick={() => getPage(page.pageCount)}>
                 <a className="page-link">{page.pageCount}</a>
                 </li>}

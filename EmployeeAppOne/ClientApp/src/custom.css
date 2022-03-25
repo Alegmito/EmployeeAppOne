@@ -12,3 +12,13 @@ code {
   background-color: #1b6ec2;
   border-color: #1861ac;
 }
+
+.btn-delete-user {
+  margin-left: 5pt;
+  text-align: center;
+  box-sizing: content-box;
+}
+
+.submittion-buttons {
+  margin-top: 5pt;
+}

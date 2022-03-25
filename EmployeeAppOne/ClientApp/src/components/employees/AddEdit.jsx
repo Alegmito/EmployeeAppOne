@@ -2,19 +2,28 @@ import { employeeService } from "../../_services/employeeService";
 import React, {useEffect, useState} from 'react'
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import {alertService} from '../../_services/alertService'
+import * as yup from 'yup'
+import {yupResolver} from '@hookform/resolvers/yup'
 
 function AddEdit({history, match}){
     const {id} = match.params;
     const isAddMode = !id;
 
-    const {register, handleSubmit, reset, setValue, errors, formState} = useForm({reValidateMode: 'onChange'})
+    const validationSchema = yup.object().shape({
+        emplName: yup.string().required('Name is required'),
+        birthDate: yup.string().required('Birthday is required')
+            .matches(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, 'Date of Birth must be a valid date in the format YYYY-MM-DD'),
+        email: yup.string().required('Email is required').email('Email is invalid'),
+        salary: yup.number().required('Salary is required').positive('Salary must be a positive number')
+    })
+    const {register, handleSubmit, reset, setValue, formState:{errors, isSubmitting}} = useForm({
+        mode: "onBlur",
+        resolver: yupResolver(validationSchema)
+    });
 
     const [employee, setEmployee] = useState(null);
 
-    const formOptions = {
-        name:{ required: "Name is required"},
-        email:{required: true},
-    }
     function onSubmit(data) {
         return isAddMode ?
             createEmployee(data)
@@ -24,19 +33,19 @@ function AddEdit({history, match}){
     function createEmployee(data){
         return employeeService.create(data)
             .then(() => {
-                console.log("User created");
+                alertService.success('Employee added', {keepAfterRouteChange: true});
                 history.push('.');
             })
-            .catch((ex) => console.log(ex));
+            .catch(alertService.error);
     }
 
     function updateEmployee(id, data){
         return employeeService.update(id, data)
             .then(() => {
-                console.log('User updated');
+                alertService.success('Employee Updated', {keepAfterRouteChange: true});
                 history.push('.');
             })
-            .catch((ex) => console.log(ex));
+            .catch(alertService.error);
     }
 
     useEffect(() => {
@@ -50,58 +59,46 @@ function AddEdit({history, match}){
         }
     }, []);
 
-
-     // <form onSubmit={handleSubmit(handleRegistration)}>
-        //     <label>Name</label>
-        //     <input type="text" name="name" {...register('name', {required: true})} />
-        //     <label>Birth Date</label>
-        //     <input type="date" name="birthDate" {...register('birthDate', {required: true})} />
-        //     <label>email</label>
-        //     <input type="text" name="Employee Name" {...register('name', {required: true})} />
-        //     <label>salary</label>
-        //     <input type="text" name="Employee Name" {...register('name', {required: true})} />
-        // </form>
-
     return(
         <form onSubmit={handleSubmit(onSubmit)} onReset={reset}>
             <h1>{isAddMode? 'Add User' : 'Update User'}</h1>
             <div className="form-row">
                 <div className="form-group col-7">
                     <label>Name</label>
-                    <input name="name" type="text" className="form-control" {...register("name", {required: "Required"})}/>
+                    <input name="name" type="text" {...register('emplName')} className={`form-control ${errors.emplName ? 'is-invalid' : ''}`} />
                     <div className="invalid-feedback">
-                        {errors?.name && errors.name.message}
+                        {errors?.emplName && errors.emplName.message}
                     </div>
                 </div>
             </div>
             <div className="form-row">
                 <div className="form-group col-3">
                     <label>Birth Date</label>
-                    <input name="birthDate" type="date" className="form-control" {...register("birthDate", {required: true})}/>
+                    <input name="birthDate" type="date" {...register('birthDate')} className={`form-control ${errors.birthDate ? 'is-invalid' : ''}`}/>
                     <div className="invalid-feedback">
-                        {errors?.name && errors.name.message}
+                        {errors?.birthDate && errors.birthDate.message}
                     </div>
                 </div>
                 <div className="form-group col-5">
                     <label>E-mail</label>
-                    <input name="email" type="text" className="form-control" {...register("email", {required: true})}/>
+                    <input name="email" type="text" {...register('email')} className={`form-control ${errors.email ? 'is-invalid' : ''}`}/>
                     <div className="invalid-feedback">
-                        {errors?.name && errors.name.message}
+                        {errors?.email && errors.email.message}
                     </div>
                 </div>
             </div>
             <div className="form-row">
                 <div className="form-group col-7">
                     <label>Salary</label>
-                    <input name="salary" type="text" className="form-control" {...register("salary", {required: true})}/>
+                    <input name="salary" type="text" {...register('salary')} className={`form-control ${errors.salary ? 'is-invalid' : ''}`}/>
                     <div className="invalid-feedback">
-                        {errors?.name && errors.name.message}
+                        {errors?.salary && errors.salary.message}
                     </div>
                 </div>
             </div>
-            <div className="form-group">
-                <button type="submit" disabled={formState.isSubmitting} className="btn btn-primary">
-                    {formState.isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
+            <div className="form-group submittion-buttons">
+                <button type="submit" disabled={isSubmitting} className="btn btn-primary">
+                    {isSubmitting && <span className="spinner-border spinner-border-sm mr-1"></span>}
                     Save
                 </button>
                 <Link to={isAddMode ? '.' : '.'} className="btn btn-link">Cancel</Link>

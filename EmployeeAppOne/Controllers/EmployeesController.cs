@@ -64,7 +64,7 @@ namespace EmployeeAppOne.Controllers
             {
                 if (!EmployeeExists(id))
                 {
-                    return NotFound();
+                    return NotFound(new {message = "user with this id doesn't exist!"});
                 }
                 else
                 {
@@ -103,11 +103,11 @@ namespace EmployeeAppOne.Controllers
             {
                 if (EmailExists(employee.Email))
                 {
-                    return BadRequest(new {message = ex.InnerException.Message});
+                    return BadRequest(new {message = "User withh This Email already exists, try another!"});
                 }
                 else
                 {
-                    throw;
+                    return BadRequest(new { message = "Something went wrong, please, try again!" });
                 }
             }
 
@@ -151,6 +151,18 @@ namespace EmployeeAppOne.Controllers
         private bool EmailExists(string email)
         {
             return _context.Employees.Any(e => e.Email == email);
+        }
+
+        private BadRequestObjectResult dbUpdateExceprtionHandle(Employee employee)
+        {
+            if (EmailExists(employee.Email))
+            {
+                return BadRequest(new { message = "User withh This Email already exists, try another!" });
+            }
+            else
+            {
+                return BadRequest(new { message = "Something went wrong, please, try again!" });
+            }
         }
     }
 }
