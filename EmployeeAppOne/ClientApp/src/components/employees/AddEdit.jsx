@@ -1,4 +1,4 @@
-import { useEmployeeActions } from "../../_services";
+import { useEmployeeActions, useTimeConverter } from "../../_services";
 import React, {useEffect, useState} from 'react'
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -9,14 +9,14 @@ import {yupResolver} from '@hookform/resolvers/yup'
 export {AddEdit};
 
 function AddEdit({history, match}){
+    const timeConverter = useTimeConverter();
     const {id} = match.params;
     const isAddMode = !id;
     const employeeActions = useEmployeeActions();
 
     const validationSchema = yup.object().shape({
         name: yup.string().required('Name is required'),
-        birthDate: yup.string().required('Birthday is required')
-            .matches(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, 'Date of Birth must be a valid date in the format YYYY-MM-DD'),
+        birthDate: yup.date().required('Birthday is required'),
         email: yup.string().required('Email is required').email('Email is invalid'),
         salary: yup.number().positive('Salary must be a positive number')
     })
@@ -28,6 +28,7 @@ function AddEdit({history, match}){
     const [employee, setEmployee] = useState(null);
 
     function onSubmit(data) {
+        data.birthDate = new Date(data.birthDate).toLocaleDateString('en-CA');
         return isAddMode ?
             createEmployee(data)
             : updateEmployee(id, data);
@@ -53,8 +54,10 @@ function AddEdit({history, match}){
         if(!isAddMode) {
             employeeActions.getById(id).then(employee => 
                 {
-                    const fields = ['id', 'name', 'email', 'birthDate', 'salary', 'modifiedDate'];
+                    const fields = ['id', 'name', 'email', 'salary', 'modifiedDate'];
                     fields.forEach(field => setValue(field, employee[field]));
+                    const date = timeConverter.createUtcDate(employee['birthDate']).toLocaleDateString('en-CA');
+                    setValue('birthDate', date);
                 }
             )   
         }
@@ -75,7 +78,7 @@ function AddEdit({history, match}){
             <div className="form-row">
                 <div className="form-group col-3">
                     <label>Birth Date</label>
-                    <input name="birthDate" type="date" {...register('birthDate')} className={`form-control ${errors.birthDate ? 'is-invalid' : ''}`}/>
+                    <input name="birthDate" type="date"  {...register('birthDate')} className={`form-control ${errors.birthDate ? 'is-invalid' : ''}`}/>
                     <div className="invalid-feedback">
                         {errors?.birthDate && errors.birthDate.message}
                     </div>

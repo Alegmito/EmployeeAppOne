@@ -1,12 +1,20 @@
 import React, {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import {useEmployeeActions} from '../../_services'
+import {useEmployeeActions, useTimeConverter} from '../../_services'
 import { alertService } from '../../_services/alertService';
 
 export {EmployeeList};
 
 function EmployeeList({match}) {
+    const currTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const timeConverter = useTimeConverter();
+    // const modifiedFormatter = new Intl.DateTimeFormat(undefined,{
+    //     timeZone: timeZone,
+    //     hour: "2-digit",
+    //     minute: "2-digit",
+    //     second: "2-digit"
+    // })
     const pageSpan = 4;
     const {path} = match;
     const [page, setPage] = useState(null);
@@ -111,9 +119,9 @@ function EmployeeList({match}) {
                         <tr key={employee.id}>
                             <td>{employee.name}</td>
                             <td>{employee.email}</td>
-                            <td>{employee.birthDate}</td>
+                            <td>{timeConverter.createUtcDate(employee.birthDate).toLocaleDateString()  }</td>
                             <td>{employee.salary}</td>
-                            <td>{employee.modifiedDate}</td>
+                            <td>{timeConverter.createUtcDateTime(employee.modifiedDate).toLocaleString()}</td>
                             <td style={{whiteSpace: 'nowrap'}}>
                                 <Link to={`${path}/${employee.id}`} className="btn btn-sm btn-primary mr-1">Edit</Link>
                                  

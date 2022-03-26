@@ -38,7 +38,7 @@ namespace EmployeeAppOne.Models
 
             foreach (var entry in entries)
             {
-                ((Employee)entry.Entity).ModifiedDate = DateTime.UtcNow;
+                ((Employee)entry.Entity).ModifiedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
             }
 
             return base.SaveChangesAsync(cancellationToken);
@@ -53,7 +53,7 @@ namespace EmployeeAppOne.Models
 
             foreach (var entry in entries)
             {
-                ((Employee)entry.Entity).ModifiedDate = DateTime.UtcNow;
+                ((Employee)entry.Entity).ModifiedDate = DateTime.SpecifyKind(DateTime.UtcNow, DateTimeKind.Utc);
             }
 
             return base.SaveChanges();
