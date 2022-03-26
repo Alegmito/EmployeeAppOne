@@ -1,46 +1,48 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import './NavMenu.css';
+import { useRecoilValue } from 'recoil';
+import { authAtom } from '../_state';
+import { useUserActions } from '../_services';
 
-export class NavMenu extends Component {
-  static displayName = NavMenu.name;
+export {NavMenu};
 
-  constructor (props) {
-    super(props);
+function NavMenu() {
+  const [collapsed, setCollapsed] = useState(true);
+  const auth = useRecoilValue(authAtom);
+  const userActions = useUserActions();
 
-    this.toggleNavbar = this.toggleNavbar.bind(this);
-    this.state = {
-      collapsed: true
-    };
+  function toggleNavbar () {
+    setCollapsed(!collapsed);
   }
 
-  toggleNavbar () {
-    this.setState({
-      collapsed: !this.state.collapsed
-    });
-  }
+  if (!auth) return null;
 
-  render () {
-    return (
-      <header>
-        <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
-          <Container>
-            <NavbarBrand tag={Link} to="/">EmployeeAppOne</NavbarBrand>
-            <NavbarToggler onClick={this.toggleNavbar} className="mr-2" />
-            <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!this.state.collapsed} navbar>
-              <ul className="navbar-nav flex-grow">
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/home">Home</NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/employee">Employees</NavLink>
-                </NavItem>
-              </ul>
-            </Collapse>
-          </Container>
-        </Navbar>
-      </header>
-    );
-  }
+  return (
+    <header>
+      <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom box-shadow mb-3" light>
+        <Container>
+          <NavbarBrand tag={Link} to="/">EmployeeAppOne</NavbarBrand>
+          <NavbarToggler onClick={toggleNavbar} className="mr-2" />
+          <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={!collapsed} navbar>
+            <ul className="navbar-nav flex-grow">
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" exact to="/">Home</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/employee">Employees</NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink tag={Link} className="text-dark" to="/details">My Profile</NavLink>
+              </NavItem>
+              <NavItem>
+                <a tag={Link} onClick={userActions.logout} className="text-dark nav-link">Logout</a>
+              </NavItem>
+            </ul>
+          </Collapse>
+        </Container>
+      </Navbar>
+    </header>
+  );
 }

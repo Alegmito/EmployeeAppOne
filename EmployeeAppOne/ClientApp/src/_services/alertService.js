@@ -22,7 +22,7 @@ export const alertType = {
 
 function onAlert(id = defaultId)
 {
-    return alertSubject.asObservable().pipe(filter(x => x && x.id == id));
+    return alertSubject.asObservable().pipe(filter(x => x && x.id === id));
 }
 
 function error(message, options) {

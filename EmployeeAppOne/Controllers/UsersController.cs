@@ -33,7 +33,7 @@ namespace EmployeeAppOne.Controllers
         //    return await _context.Users.ToListAsync();
         //}
 
-        // GET: api/Users/5
+        // GET: Users/5
         [HttpGet("{id}")]
         [Authorize]
         public async Task<ActionResult<User>> GetUser(string id)
@@ -48,9 +48,9 @@ namespace EmployeeAppOne.Controllers
             return user;
         }
 
-        [HttpPost("/login")]
+        [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<User>> Login([FromBody]User credentials)
+        public async Task<ActionResult<User>> Login([FromBody] User credentials)
         {
             ActionResult response = Unauthorized();
 
@@ -59,9 +59,9 @@ namespace EmployeeAppOne.Controllers
             if (user != null && credentials.Password == user.Password)
             {
                 var tokenString = GenerateJWT(user);
-                
-                return Ok(new {token = tokenString});
-                
+
+                return Ok(new { token = tokenString, login = user.Login });
+
             }
 
             return response;
@@ -86,7 +86,7 @@ namespace EmployeeAppOne.Controllers
                 );
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
-            
+
         }
 
         //[HttpPost("/logout")]
@@ -96,9 +96,9 @@ namespace EmployeeAppOne.Controllers
 
         //}
 
-            // PUT: api/Users/5
-            // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-            [HttpPut("{id}")]
+        // PUT: api/Users/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> PutUser(string id, User user)
         {

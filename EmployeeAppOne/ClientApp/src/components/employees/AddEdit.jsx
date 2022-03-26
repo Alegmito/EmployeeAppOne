@@ -1,4 +1,4 @@
-import { employeeService } from "../../_services/employeeService";
+import { useEmployeeActions } from "../../_services";
 import React, {useEffect, useState} from 'react'
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
@@ -11,6 +11,7 @@ export {AddEdit};
 function AddEdit({history, match}){
     const {id} = match.params;
     const isAddMode = !id;
+    const employeeActions = useEmployeeActions();
 
     const validationSchema = yup.object().shape({
         name: yup.string().required('Name is required'),
@@ -33,26 +34,24 @@ function AddEdit({history, match}){
     }
 
     function createEmployee(data){
-        return employeeService.create(data)
+        return employeeActions.create(data)
             .then(() => {
                 alertService.success('Employee added', {keepAfterRouteChange: true});
                 history.push('.');
             })
-            .catch(alertService.error);
     }
 
     function updateEmployee(id, data){
-        return employeeService.update(id, data)
+        return employeeActions.update(id, data)
             .then(() => {
                 alertService.success('Employee Updated', {keepAfterRouteChange: true});
                 history.push('.');
             })
-            .catch(alertService.error);
     }
 
     useEffect(() => {
         if(!isAddMode) {
-            employeeService.getById(id).then(employee => 
+            employeeActions.getById(id).then(employee => 
                 {
                     const fields = ['id', 'name', 'email', 'birthDate', 'salary', 'modifiedDate'];
                     fields.forEach(field => setValue(field, employee[field]));

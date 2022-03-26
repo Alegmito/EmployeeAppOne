@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import {employeeService} from '../../_services/employeeService'
+import {useEmployeeActions} from '../../_services'
 import { alertService } from '../../_services/alertService';
 
 export {EmployeeList};
@@ -16,10 +16,11 @@ function EmployeeList({match}) {
         direction: true
     })
     const colNames = ['Id','Name', 'Email', 'BirthDate', 'Salary', 'modifiedDate'];
+    const employeeActions = useEmployeeActions();
     
     // sets dependecies to setEmployees, to avoid infinite loop
     useEffect(() => {
-        employeeService.getPage(1, sortState.column, sortState.direction).then(x => setPage(x));
+        employeeActions.getPage(1, sortState.column, sortState.direction).then(x => setPage(x));
         setRefresh(false);
     },[isRefresh, sortState, setPage]);
 
@@ -34,7 +35,7 @@ function EmployeeList({match}) {
                 return x;
             })}
         );
-        employeeService._delete(id)
+        employeeActions._delete(id)
             .then(() => {
                 setRefresh(true);
                 alertService.success("Employee deleted", {keepAfterRouteChange: true})
@@ -43,7 +44,7 @@ function EmployeeList({match}) {
 
     function getPage(pageNum)
     {
-        employeeService.getPage(pageNum, sortState.column, sortState.direction).then(x => setPage(x));
+        employeeActions.getPage(pageNum, sortState.column, sortState.direction).then(x => setPage(x));
     }
 
     function makePagesArray(currPage, span, lastPage)

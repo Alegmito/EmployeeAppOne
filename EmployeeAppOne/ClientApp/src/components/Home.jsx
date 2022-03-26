@@ -1,14 +1,19 @@
-import React, { Component } from 'react';
-
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { authAtom } from '../_state';
 export {Home};
 
 function Home()
 {
+  const auth = useRecoilValue(authAtom);
   // static displayName = Home.name;
   return (
     <div>
-      <h1>Employee App!</h1>
+      <h1>Hello, {auth?.login}. Welcome to employee App!</h1>
       <p>Welcome to Employee single-page application, built with React and C#</p>
+      <p><Link to="/employee">Manage Employees</Link></p>
+      <p><Link to="/account/details">View My Profile</Link></p>
     </div>
   );
 }

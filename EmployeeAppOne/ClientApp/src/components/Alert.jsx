@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { history } from '../_helpers';
 
 import { alertService, alertType } from '../_services/alertService';
 import './Alert.css'
@@ -17,7 +18,6 @@ const defaultProps = {
 
 function Alert({id, fade})
 {
-    const history = useHistory();
     const [alerts, setAlerts] = useState([]);
 
     useEffect(() => {
@@ -41,10 +41,10 @@ function Alert({id, fade})
             });
 
         const historyUnlisten = history.listen(({pathname}) => {
-            if (pathname.endsWith('/')) return;
+            if (pathname?.endsWith('/')) return;
     
             alertService.clear(id);
-        });
+        }, []);
 
         return () => {
             subscription.unsubscribe();

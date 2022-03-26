@@ -1,11 +1,15 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router-dom';
+import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
+import { useUserActions } from '../../_services';
+
+export {Register} ;
 
 function Register({history})
 {
-    // const userActions = useUserActions();
+    const userActions = useUserActions();
     // const alert = 
 
     const validationSchema = Yup.object().shape(
@@ -17,7 +21,7 @@ function Register({history})
                 .min(4, 'Password must be at least 4 chars'),
             passwordConfirm: Yup.string()
                 .required('Confirm your password')
-                .ref(password, 'Passwords must match')
+                .oneOf([Yup.ref('password')], 'Passwords must match')
         }
     );
 
@@ -31,7 +35,7 @@ function Register({history})
 
     function onSubmit(data)
     {
-        // add userActions.submit
+        userActions.register(data)
     }
 
     return (
@@ -46,16 +50,17 @@ function Register({history})
                     </div>
                     <div className="form-group">
                         <label>Password</label>
-                        <input name="Password" type="text" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`}></input>
+                        <input name="Password" type="password" {...register('password')} className={`form-control ${errors.password ? 'is-invalid' : ''}`}></input>
                         <div className="invalid-feedback">{errors.password?.message}</div>
                     </div>
                     <div className="form-group">
                         <label>Confirm password</label>
-                        <input name="passwordConfirm" type="text" {...register('passwordConfirm')} className={`form-control ${errors.passwordConfirm ? 'is-invalid' : ''}`}></input>
+                        <input name="passwordConfirm" type="password" {...register('passwordConfirm')} className={`form-control ${errors.passwordConfirm ? 'is-invalid' : ''}`}></input>
                         <div className="invalid-feedback">{errors.passwordConfirm?.message}</div>
                     </div>
-                    <button disabled="isSubmitting" className="btn btn-primary">
+                    <button disabled={isSubmitting} className="btn btn-primary">
                         {isSubmitting && <span className="spinnter-border spinner-border-sm mr-1"></span>}
+                        Register
                     </button>
                     <Link to="login" className="btn btn-link">Cancel</Link>
                 </form>

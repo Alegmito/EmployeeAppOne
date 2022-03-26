@@ -9,7 +9,7 @@ namespace EmployeeAppOne.Models
         public string Login { get; set; }
         public string Password { get; set; }
 
-        public string? TokenJWT { get; set; } = null;
+        //public string? TokenJWT { get; set; } = null;
 
         public List<Role> Roles { get; set; } = new List<Role>();
     }
