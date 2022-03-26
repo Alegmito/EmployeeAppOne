@@ -6,16 +6,18 @@ import {alertService} from '../../_services/alertService'
 import * as yup from 'yup'
 import {yupResolver} from '@hookform/resolvers/yup'
 
+export {AddEdit};
+
 function AddEdit({history, match}){
     const {id} = match.params;
     const isAddMode = !id;
 
     const validationSchema = yup.object().shape({
-        emplName: yup.string().required('Name is required'),
+        name: yup.string().required('Name is required'),
         birthDate: yup.string().required('Birthday is required')
             .matches(/^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/, 'Date of Birth must be a valid date in the format YYYY-MM-DD'),
         email: yup.string().required('Email is required').email('Email is invalid'),
-        salary: yup.number().required('Salary is required').positive('Salary must be a positive number')
+        salary: yup.number().positive('Salary must be a positive number')
     })
     const {register, handleSubmit, reset, setValue, formState:{errors, isSubmitting}} = useForm({
         mode: "onBlur",
@@ -65,7 +67,7 @@ function AddEdit({history, match}){
             <div className="form-row">
                 <div className="form-group col-7">
                     <label>Name</label>
-                    <input name="name" type="text" {...register('emplName')} className={`form-control ${errors.emplName ? 'is-invalid' : ''}`} />
+                    <input name="name" type="text" {...register('name')} className={`form-control ${errors.emplName ? 'is-invalid' : ''}`} />
                     <div className="invalid-feedback">
                         {errors?.emplName && errors.emplName.message}
                     </div>
@@ -107,5 +109,3 @@ function AddEdit({history, match}){
         </form>
     )
 }
-
-export {AddEdit};

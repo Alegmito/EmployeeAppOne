@@ -9,18 +9,20 @@ namespace EmployeeAppOne.Models
         
 
         public static IQueryable<Employee> GetSortedEmployees(this IQueryable<Employee> query,
-            EmployeeSortModel sortModel)
+            SortState sortState, bool direction)
         {
-            switch(sortModel.SortName)
+            switch (sortState)
             {
                 case SortState.Name:
-                    return sortModel.Direction ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
+                    return direction ? query.OrderBy(e => e.Name) : query.OrderByDescending(e => e.Name);
                 case SortState.Salary:
-                    return sortModel.Direction ? query.OrderBy(e => e.Salary) : query.OrderByDescending(e => e.Salary);
+                    return direction ? query.OrderBy(e => e.Salary) : query.OrderByDescending(e => e.Salary);
                 case SortState.BirthDate:
-                    return sortModel.Direction ? query.OrderBy(e => e.BirthDate) : query.OrderByDescending(e => e.BirthDate);
+                    return direction ? query.OrderBy(e => e.BirthDate) : query.OrderByDescending(e => e.BirthDate);
                 case SortState.Email:
-                    return sortModel.Direction ? query.OrderBy(e => e.Email) : query.OrderByDescending(e => e.Email);
+                    return direction ? query.OrderBy(e => e.Email) : query.OrderByDescending(e => e.Email);
+                case SortState.ModifiedDate:
+                    return direction ? query.OrderBy(e => e.ModifiedDate) : query.OrderByDescending(e => e.ModifiedDate);
                 default:
                     return query;
             }

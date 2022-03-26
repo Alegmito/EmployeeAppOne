@@ -1,7 +1,9 @@
 import { Route } from "react-router-dom";
 import { Switch } from "react-router-dom";
 import { AddEdit } from "./AddEdit";
-import EmployeeList from "./EmployeeList";
+import {EmployeeList} from "./EmployeeList";
+
+export {Employee};
 
 function Employee({match}) {
     const {path} = match;
@@ -15,4 +17,3 @@ function Employee({match}) {
     )
 }
 
-export {Employee};

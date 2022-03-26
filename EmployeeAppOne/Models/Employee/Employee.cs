@@ -21,5 +21,26 @@ namespace EmployeeAppOne.Models
         [Display(Name = "Last Modified Date")]
         public DateTime ModifiedDate { get; set; }
 
+        public IComparable this[string propName]
+        {
+            get
+            {
+                //using reflection
+                //foreach (var prop in GetType().GetProperties())
+                //    if (nameof(prop).ToLower().Equals(propName.ToLower()))
+                //        return (IComparable)prop.GetValue(this);
+                //return Id;
+                return propName switch
+                {
+                    "name" => Name,
+                    "email"=> Email,
+                    "birthDate"=> BirthDate,
+                    "salary"=> Salary,
+                    "modidiedDate"=> ModifiedDate,
+                    _ => Id,
+                };
+            }
+        }
+
     }
 }

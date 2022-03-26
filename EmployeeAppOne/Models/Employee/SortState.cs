@@ -4,8 +4,9 @@
     {
         None,
         Name,
-        BirthDate,
         Email,
         Salary,
+        ModifiedDate,
+        BirthDate
     }
 }

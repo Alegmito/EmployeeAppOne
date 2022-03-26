@@ -4,7 +4,9 @@ import { useForm } from 'react-hook-form';
 import {employeeService} from '../../_services/employeeService'
 import { alertService } from '../../_services/alertService';
 
-export function EmployeeList({match}) {
+export {EmployeeList};
+
+function EmployeeList({match}) {
     const pageSpan = 4;
     const {path} = match;
     const [page, setPage] = useState(null);
@@ -13,7 +15,7 @@ export function EmployeeList({match}) {
         column: 'None',
         direction: true
     })
-    const colNames = ['Name', 'Email', 'BirthDate', 'Salary'];
+    const colNames = ['Id','Name', 'Email', 'BirthDate', 'Salary', 'modifiedDate'];
     
     // sets dependecies to setEmployees, to avoid infinite loop
     useEffect(() => {
@@ -91,9 +93,9 @@ export function EmployeeList({match}) {
             <table className="table table-striped">
                 <thead>
                     <tr>
-                        {colNames.map(colName =>
-                            <th>
-                                <button style={{width:"100%"}} className={sortState.column === colName ? "btn btn-outline-primary" : "btn btn-outline-secondary"} 
+                        {colNames.map(colName => colName !== 'Id' &&
+                            <th key={colName}>
+                                <button  style={{width:"100%"}} className={sortState.column === colName ? "btn btn-outline-primary" : "btn btn-outline-secondary"} 
                             onClick={() => sortColumn(colName)}>{colName}{sortState.column === colName
                                 ? sortState.direction ? "\u2191" : "\u2193" : ""}</button> 
                             </th>
@@ -110,7 +112,7 @@ export function EmployeeList({match}) {
                             <td>{employee.email}</td>
                             <td>{employee.birthDate}</td>
                             <td>{employee.salary}</td>
-                            {/* <td>{employee.modifiedDate}</td> */}
+                            <td>{employee.modifiedDate}</td>
                             <td style={{whiteSpace: 'nowrap'}}>
                                 <Link to={`${path}/${employee.id}`} className="btn btn-sm btn-primary mr-1">Edit</Link>
                                  
@@ -136,7 +138,7 @@ export function EmployeeList({match}) {
                 {page.currentPage - pageSpan > 2 && <li className="page-item disabled"><a className="page-link">...</a></li>}
                 
                 {makePagesArray(page.currentPage, pageSpan, page.pageCount).map(x => 
-                        <li className={page.currentPage === x ? "page-item disabled" : "page-item"} onClick={() => getPage(x)}>
+                        <li key={x} className={page.currentPage === x ? "page-item disabled" : "page-item"} onClick={() => getPage(x)}>
                             <a className="page-link">{x}</a>
                         </li>)
                 }
@@ -151,4 +153,3 @@ export function EmployeeList({match}) {
     );
 }
 
-export default EmployeeList;

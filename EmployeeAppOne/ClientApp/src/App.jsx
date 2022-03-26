@@ -6,17 +6,23 @@ import './custom.css'
 import { Employee } from './components/employees/Employee';
 import { NavLink, Link } from 'react-router-dom';
 import { Alert } from './components/Alert';
+import { useRecoilValue } from 'recoil';
+import { authAtom } from './_state';
 
-export default class App extends Component {
-  static displayName = App.name;
+export {App}
 
-  render () {
+function App(){
+  // static displayName = App.name;
+  const auth = useRecoilValue(authAtom);
+
     return (
-      <Layout>
+      <div className = {'app-container' + (auth ? ' bg-light' :'')}>
+        <Layout>
         <Alert />
         <Route path='/employee' component={Employee}/>
         <Route exact path='/' component={Home} />
-      </Layout>
+        </Layout>
+      </div>
+      
     );
-  }
 }

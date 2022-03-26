@@ -439,8 +439,7 @@ namespace EmployeeAppOne.Data
                         Name = names[i],
                         Email = emails[i],
                         BirthDate = GetRandBirthDate(),
-                        Salary = rand.Next(40, 350) * 1000,
-                        ModifiedDate = DateTime.Now
+                        Salary = rand.Next(40, 350) * 1000
                     };
             }
         }
@@ -454,6 +453,22 @@ namespace EmployeeAppOne.Data
             GenerateSeed(ref employees);
 
             dbContext.Employees.AddRange(employees);
+
+            var roleAdmin = new Role() { Name = "admin" };
+            var roleUser = new Role() { Name = "user" };
+
+            dbContext.Roles.AddRange(roleAdmin, roleUser);
+
+            var admin = new User() { Login = "admin", Password = "admin" };
+            var user = new User() { Login = "user", Password = "user" };
+
+            dbContext.Users.AddRange(admin, user);
+
+            admin.Roles.Add(roleAdmin);
+            admin.Roles.Add(roleUser);
+            user.Roles.Add(roleUser);
+
+
             dbContext.SaveChanges();
         }
     }

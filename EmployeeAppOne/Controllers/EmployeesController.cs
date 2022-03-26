@@ -7,15 +7,16 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using EmployeeAppOne.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeAppOne.Controllers
 {
     [Route("[controller]")]
     [ApiController]
+    [Authorize]
     public class EmployeesController : ControllerBase
     {
         private readonly EmployeeAppContext _context;
-
         public EmployeesController(EmployeeAppContext context)
         {
             _context = context;
@@ -28,7 +29,7 @@ namespace EmployeeAppOne.Controllers
             return await _context.Employees.ToListAsync();
         }
 
-        // GET: Employee/5
+        // GET: Employees/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee>> GetEmployee(int id)
         {
@@ -51,8 +52,6 @@ namespace EmployeeAppOne.Controllers
             {
                 return BadRequest();
             }
-
-            employee.ModifiedDate = DateTime.Now;
 
             _context.Entry(employee).State = EntityState.Modified;
 
@@ -91,7 +90,6 @@ namespace EmployeeAppOne.Controllers
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
-            employee.ModifiedDate= DateTime.Now;
             _context.Employees.Add(employee);
 
             try
@@ -120,9 +118,7 @@ namespace EmployeeAppOne.Controllers
         {
             int pageSize = 10;
 
-            var sortModel = new EmployeeSortModel(sortState, ascending);
-
-            var employees = QueryExtenstions.GetSortedEmployees(_context.Employees, sortModel);
+            var employees = QueryExtenstions.GetSortedEmployees(_context.Employees, sortState, ascending);
 
             return await QueryExtenstions.GetPageViewResultAsync(employees, page, pageSize);
         }
