@@ -13,7 +13,7 @@ function Home()
       <h1>Hello, {auth?.login}. Welcome to employee App!</h1>
       <p>Welcome to Employee single-page application, built with React and C#</p>
       <p><Link to="/employee">Manage Employees</Link></p>
-      <p><Link to="/account/details">View My Profile</Link></p>
+      <p><Link to="/details">View My Profile</Link></p>
     </div>
   );
 }

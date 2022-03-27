@@ -23,8 +23,8 @@ function App(){
     return (
       <div className = {'app-container' + (auth ? ' bg-light' :'')}>
         <Router history={history}>
+          <Alert />
           <Layout>
-            <Alert />
             <Switch>
               <AuthorisedRoute exact path="/" component={Home} />
               <AuthorisedRoute path="/employee" component={Employee} />

@@ -28,6 +28,7 @@ function AddEdit({history, match}){
     const [employee, setEmployee] = useState(null);
 
     function onSubmit(data) {
+        //parameters set to avoid date chanches due to timezones conversion
         data.birthDate = new Date(data.birthDate).toLocaleDateString('en-CA');
         return isAddMode ?
             createEmployee(data)
@@ -56,7 +57,7 @@ function AddEdit({history, match}){
                 {
                     const fields = ['id', 'name', 'email', 'salary', 'modifiedDate'];
                     fields.forEach(field => setValue(field, employee[field]));
-                    const date = timeConverter.createUtcDate(employee['birthDate']).toLocaleDateString('en-CA');
+                    const date = timeConverter.createUtcDateStringInput(employee['birthDate']);
                     setValue('birthDate', date);
                 }
             )   

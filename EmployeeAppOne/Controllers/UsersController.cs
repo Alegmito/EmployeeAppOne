@@ -52,7 +52,7 @@ namespace EmployeeAppOne.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<User>> Login([FromBody] User credentials)
         {
-            ActionResult response = Unauthorized();
+            ActionResult response = Unauthorized(new {message = "The username or password is not incorrect" });
 
             var user = await _context.Users.FindAsync(credentials.Login);
 
@@ -143,7 +143,7 @@ namespace EmployeeAppOne.Controllers
             {
                 if (UserExists(user.Login))
                 {
-                    return Conflict();
+                    return Conflict(new {message = "This login is taken!"});
                 }
                 else
                 {

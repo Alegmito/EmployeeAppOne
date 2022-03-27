@@ -40,7 +40,7 @@ function Register({history})
 
     return (
         <div className="card m-3">
-            <h4 className="card-header">Register</h4>
+            <h4 className="card-header">Register Page</h4>
             <div className="card-body">
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <div className="form-group">

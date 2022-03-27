@@ -25,7 +25,7 @@ function Account({history, match}) {
                     <Switch>
                         <Route path={`${path}/login`} component={Login}/>
                         <Route path={`${path}/register`} component={Register}/>
-                        <Redirect from={`${path}*`} to={`${path}/login`} component={Register} />
+                        <Redirect from={`${path}*`} to={`${path}/login`} />
                     </Switch>
                 </div>
             </div>

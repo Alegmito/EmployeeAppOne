@@ -119,7 +119,7 @@ function EmployeeList({match}) {
                         <tr key={employee.id}>
                             <td>{employee.name}</td>
                             <td>{employee.email}</td>
-                            <td>{timeConverter.createUtcDate(employee.birthDate).toLocaleDateString()  }</td>
+                            <td>{timeConverter.createUtcDateString(employee.birthDate)}</td>
                             <td>{employee.salary}</td>
                             <td>{timeConverter.createUtcDateTime(employee.modifiedDate).toLocaleString()}</td>
                             <td style={{whiteSpace: 'nowrap'}}>
