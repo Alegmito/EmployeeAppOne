@@ -1,5 +1,5 @@
 # EmployeeAppOne
-Simple code webb app without authorization
+Simple code webb app with authorization
 # Requirements
 1. SQL EXPRESS LocalDB. Could be changed to other SQL server like database, configure connection string in application.json file.
 # Features
